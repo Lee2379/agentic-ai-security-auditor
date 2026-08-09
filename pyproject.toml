@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "iris-agent-security-auditor"
+name = "agentic-ai-security-auditor"
 version = "1.0.0"
-description = "Evidence-grounded security auditing for containerized AI-agent runtimes"
+description = "Evidence-grounded agentic AI security auditing for containerized agent runtimes"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}

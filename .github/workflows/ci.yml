@@ -31,4 +31,4 @@ jobs:
       - name: Validate collector syntax
         run: bash -n scripts/collect_security_evidence.sh
       - name: Build hardened offline image
-        run: docker build -t iris-agent-security-auditor:ci .
+        run: docker build -t agentic-ai-security-auditor:ci .

@@ -1,6 +1,6 @@
-# Iris — Evidence-Grounded AI Agent Security Auditor
+# Agentic AI Security Auditor — Iris
 
-[![CI](https://github.com/Lee2379/iris-agent-security-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/Lee2379/iris-agent-security-auditor/actions/workflows/ci.yml)
+[![CI](https://github.com/Lee2379/agentic-ai-security-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/Lee2379/agentic-ai-security-auditor/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/runtime-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -191,7 +191,7 @@ python -m unittest discover -s tests -v
 python scripts/privacy_scan.py .
 python scripts/verify_evidence_images.py
 bash -n scripts/collect_security_evidence.sh
-docker build -t iris-agent-security-auditor .
+docker build -t agentic-ai-security-auditor .
 ```
 
 CI repeats the test suite, regenerates and byte-compares deterministic artifacts, scans text for configured secret/PII patterns, verifies every evidence image against its SHA-256 manifest, validates collector syntax, and builds the non-root image.
