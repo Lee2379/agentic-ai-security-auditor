@@ -1,0 +1,15 @@
+{
+  "raw_advisory_records": 12,
+  "unique_dependency_vulnerabilities": 6,
+  "alias_records_removed": 6,
+  "deduplication_reduction_pct": 50.0,
+  "findings_total": 7,
+  "findings_by_severity": {
+    "high": 3,
+    "moderate": 3,
+    "low": 1
+  },
+  "passed_controls": 15,
+  "not_verified_items": 6,
+  "automatic_remediation_performed": false
+}

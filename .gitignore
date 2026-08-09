@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+artifacts/ci_run/
+artifacts/docker_run/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.env
+*.pem
+*.key

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "publication_policy": "Privacy-reviewed deterministic derivatives; originals are not committed.",
+  "artifacts": [
+    {
+      "evidence_id": "E-01",
+      "path": "assets/evidence/01-iris-policy-boundary-sanitized.png",
+      "bytes": 122836,
+      "sha256": "b513a562c21118800bbb924a95668138930ebfaeb86b97ac8fc8b50a2d469a1c"
+    },
+    {
+      "evidence_id": "E-02",
+      "path": "assets/evidence/02-iris-profile-isolation-sanitized.png",
+      "bytes": 101819,
+      "sha256": "af46f827b23fee1fbbec978b71fe0d68330bdd721802b90bf6045e12708bbf84"
+    },
+    {
+      "evidence_id": "E-03",
+      "path": "assets/evidence/03-least-privilege-controls-sanitized.png",
+      "bytes": 260148,
+      "sha256": "447f81ed21b1620e38d00181812de560576438469eb310ef3305354709753e70"
+    },
+    {
+      "evidence_id": "E-04",
+      "path": "assets/evidence/04-cron-run-success-sanitized.png",
+      "bytes": 74141,
+      "sha256": "883339395f780e695b6fa43cdd2b9763abce51c24898e6a3f20fe17312fe0c6d"
+    },
+    {
+      "evidence_id": "E-05",
+      "path": "assets/evidence/05-scheduled-audit-evidence-sanitized.png",
+      "bytes": 187607,
+      "sha256": "c9ec2ac38a3ac9f052130c3001e104a00e71faafa369730bc5efff600f53fdb9"
+    },
+    {
+      "evidence_id": "E-06",
+      "path": "assets/evidence/06-structured-audit-report-sanitized.png",
+      "bytes": 530035,
+      "sha256": "887b35ba005a1d92016ad5de8625642bcf54c5689008f77f773ba3e1e2b52805"
+    },
+    {
+      "evidence_id": "E-07",
+      "path": "assets/evidence/07-gateway-cron-status-sanitized.png",
+      "bytes": 160925,
+      "sha256": "12da7075e2d22816bfacd8bb6389d6d0b100f740b66cc4c88e1ce8d63603502a"
+    },
+    {
+      "evidence_id": "E-08",
+      "path": "assets/evidence/08-scheduled-job-registry-sanitized.png",
+      "bytes": 137449,
+      "sha256": "a50fe342008bc43b352a5b09972b4f5dd6bbc1ab43f1f5d25e66856e2f075bee"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "metadata": {
+    "timestamp_utc": "2026-08-09T03:40:33Z",
+    "hermes_version": "0.20.0",
+    "python_version": "3.13.5",
+    "openai_sdk_version": "2.24.0"
+  },
+  "profile": {
+    "name": "iris",
+    "model_provider": "openai-codex",
+    "gateway": "running",
+    "bundled_skills": 0,
+    "env_exists": true,
+    "soul_exists": true
+  },
+  "runtime": {
+    "uid": 1000,
+    "gid": 1000,
+    "user": "hermes",
+    "container_detected": true,
+    "docker_socket_mounted": false,
+    "cap_eff": "0000000000000000",
+    "no_new_privs": 0,
+    "seccomp": 2
+  },
+  "security_files": [
+    {"path": "/opt/data/profiles/iris/.env", "mode": "600", "owner": "hermes:hermes"},
+    {"path": "/opt/data/profiles/iris/config.yaml", "mode": "600", "owner": "hermes:hermes"},
+    {"path": "/opt/data/profiles/iris/SOUL.md", "mode": "600", "owner": "hermes:hermes"}
+  ],
+  "controls": {
+    "approvals.mode": "manual",
+    "approvals.timeout": 300,
+    "approvals.cron_mode": "deny",
+    "approvals.mcp_reload_confirm": true,
+    "approvals.destructive_slash_confirm": true,
+    "security.tirith_enabled": true,
+    "security.tirith_fail_open": false,
+    "security.allow_private_urls": false,
+    "security.allow_lazy_installs": false
+  },
+  "tools": {"cli": []},
+  "mcp_servers": [],
+  "advisories_raw": [
+    {"id": "GHSA-cq5v-8q36-5273", "cve_id": "CVE-2026-69244", "package": "aiohttp", "installed_version": "3.14.1", "severity": "high", "title": "AIOHTTP: Out-of-bounds heap read in C HTTP response parser error path", "fixed_version": "3.14.3"},
+    {"id": "PYSEC-2026-3545", "cve_id": "CVE-2026-69244", "package": "aiohttp", "installed_version": "3.14.1", "severity": "unknown", "title": "AIOHTTP: Out-of-bounds heap read in C HTTP response parser error path", "fixed_version": "3.14.3"},
+    {"id": "GHSA-mfx4-hv73-q22v", "cve_id": "CVE-2026-69243", "package": "aiohttp", "installed_version": "3.14.1", "severity": "moderate", "title": "AIOHTTP: HTTP request smuggling via WebSocket upgrade", "fixed_version": "3.14.2"},
+    {"id": "PYSEC-2026-3546", "cve_id": "CVE-2026-69243", "package": "aiohttp", "installed_version": "3.14.1", "severity": "unknown", "title": "AIOHTTP: HTTP request smuggling via WebSocket upgrade", "fixed_version": "3.14.2"},
+    {"id": "GHSA-mq44-7p77-q5h7", "cve_id": "CVE-2026-59881", "package": "aiohttp", "installed_version": "3.14.1", "severity": "moderate", "title": "AIOHTTP: WebSocket client accepts compressed frames without negotiated permessage-deflate", "fixed_version": "3.14.2"},
+    {"id": "PYSEC-2026-3547", "cve_id": "CVE-2026-59881", "package": "aiohttp", "installed_version": "3.14.1", "severity": "unknown", "title": "AIOHTTP: WebSocket client accepts compressed frames without negotiated permessage-deflate", "fixed_version": "3.14.2"},
+    {"id": "GHSA-g6cj-pr64-35w5", "cve_id": "CVE-2026-69247", "package": "cryptography", "installed_version": "48.0.1", "severity": "high", "title": "cryptography: PKCS#7 EnvelopedData decryption exposes a Bleichenbacher oracle", "fixed_version": "50.0.0"},
+    {"id": "PYSEC-2026-3552", "cve_id": "CVE-2026-69247", "package": "cryptography", "installed_version": "48.0.1", "severity": "unknown", "title": "cryptography: PKCS#7 EnvelopedData decryption exposes a Bleichenbacher oracle", "fixed_version": "50.0.0"},
+    {"id": "GHSA-jwv3-5hgf-82ww", "cve_id": "CVE-2026-69249", "package": "cryptography", "installed_version": "48.0.1", "severity": "high", "title": "python-cryptography: Duplicate self-signed intermediates can cause exponential path-building", "fixed_version": "49.0.0"},
+    {"id": "PYSEC-2026-3553", "cve_id": "CVE-2026-69249", "package": "cryptography", "installed_version": "48.0.1", "severity": "unknown", "title": "python-cryptography: Duplicate self-signed intermediates can cause exponential path-building", "fixed_version": "49.0.0"},
+    {"id": "GHSA-m2h6-j472-rp4c", "cve_id": "CVE-2026-69248", "package": "cryptography", "installed_version": "48.0.1", "severity": "moderate", "title": "python-cryptography verifier accepts wildcard DNS names allowing escape from permittedSubtrees", "fixed_version": "49.0.0"},
+    {"id": "PYSEC-2026-3554", "cve_id": "CVE-2026-69248", "package": "cryptography", "installed_version": "48.0.1", "severity": "unknown", "title": "python-cryptography verifier accepts wildcard DNS names allowing escape from permittedSubtrees", "fixed_version": "49.0.0"}
+  ],
+  "collector_guarantees": {
+    "credential_values_read": false,
+    "system_modifications_performed": false,
+    "automatic_remediation_performed": false
+  }
+}

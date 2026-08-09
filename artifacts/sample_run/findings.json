@@ -1,0 +1,65 @@
+[
+  {
+    "finding_id": "IRIS-DEP-001",
+    "severity": "high",
+    "asset": "aiohttp 3.14.1",
+    "evidence": "GHSA-cq5v-8q36-5273; aliases: PYSEC-2026-3545; fixed in 3.14.3",
+    "risk": "A malformed or malicious HTTP response could trigger memory-safety behavior or denial of service in an affected parser path; reachability in this deployment was not verified.",
+    "recommendation": "Upgrade aiohttp to 3.14.3 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-DEP-002",
+    "severity": "high",
+    "asset": "cryptography 48.0.1",
+    "evidence": "GHSA-g6cj-pr64-35w5; aliases: PYSEC-2026-3552; fixed in 50.0.0",
+    "risk": "If attacker-controlled PKCS#7 EnvelopedData is decrypted and distinguishable outcomes are exposed, an adaptive attacker may derive protected information; feature use was not verified.",
+    "recommendation": "Upgrade cryptography to 50.0.0 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-DEP-003",
+    "severity": "high",
+    "asset": "cryptography 48.0.1",
+    "evidence": "GHSA-jwv3-5hgf-82ww; aliases: PYSEC-2026-3553; fixed in 49.0.0",
+    "risk": "Crafted certificate chains could cause excessive path-building work and service degradation where untrusted chains are validated; reachability was not verified.",
+    "recommendation": "Upgrade cryptography to 49.0.0 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-DEP-004",
+    "severity": "moderate",
+    "asset": "aiohttp 3.14.1",
+    "evidence": "GHSA-mfx4-hv73-q22v; aliases: PYSEC-2026-3546; fixed in 3.14.2",
+    "risk": "Affected server or proxy arrangements may interpret WebSocket upgrades inconsistently and permit request smuggling; deployment topology was not collected.",
+    "recommendation": "Upgrade aiohttp to 3.14.2 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-DEP-005",
+    "severity": "moderate",
+    "asset": "aiohttp 3.14.1",
+    "evidence": "GHSA-mq44-7p77-q5h7; aliases: PYSEC-2026-3547; fixed in 3.14.2",
+    "risk": "A malicious WebSocket peer could cause processing of unsolicited compressed frames and additional resource consumption; WebSocket use was not verified.",
+    "recommendation": "Upgrade aiohttp to 3.14.2 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-DEP-006",
+    "severity": "moderate",
+    "asset": "cryptography 48.0.1",
+    "evidence": "GHSA-m2h6-j472-rp4c; aliases: PYSEC-2026-3554; fixed in 49.0.0",
+    "risk": "Certificate validation may accept identities outside an intended permitted subtree; affected verification workflows were not verified.",
+    "recommendation": "Upgrade cryptography to 49.0.0 or later through the controlled build process, then run compatibility and regression tests.",
+    "status": "open"
+  },
+  {
+    "finding_id": "IRIS-RUNTIME-005",
+    "severity": "low",
+    "asset": "runtime container",
+    "evidence": "NoNewPrivs=0",
+    "risk": "A future executable or configuration change could acquire privilege through set-user-ID, set-group-ID, or file capabilities.",
+    "recommendation": "Enable no-new-privileges after compatibility testing and retain capability dropping and seccomp filtering.",
+    "status": "open"
+  }
+]
