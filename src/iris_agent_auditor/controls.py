@@ -61,10 +61,31 @@ def evaluate_controls(evidence: dict[str, Any]) -> tuple[list[str], list[Finding
         else:
             findings.append(Finding(f"IRIS-CONTROL-{len(findings)+1:03d}", "moderate", key, f"observed={controls.get(key)!r}; expected={expected!r}", "The observed policy does not match the auditor's fail-closed baseline.", f"Set {key} to {expected!r} under change control and re-run the audit."))
 
-    if not tools.get("cli"):
+    cli_tools = tools.get("cli") or []
+    if not cli_tools:
         passed.append("The Iris profile exposes no interactive CLI tools.")
-    if not evidence["mcp_servers"]:
+    else:
+        findings.append(Finding(
+            "IRIS-EXPOSURE-001",
+            "moderate",
+            "Iris profile",
+            f"{len(cli_tools)} interactive CLI tool(s) enabled",
+            "Interactive command or file capabilities expand the auditor's authority and can invalidate the read-only trust boundary.",
+            "Disable interactive CLI tools for the auditor profile, then re-run the exposure and report-contract tests.",
+        ))
+
+    mcp_servers = evidence["mcp_servers"]
+    if not mcp_servers:
         passed.append("The Iris profile has no configured MCP servers.")
+    else:
+        findings.append(Finding(
+            "IRIS-EXPOSURE-002",
+            "moderate",
+            "Iris profile",
+            f"{len(mcp_servers)} MCP server(s) configured",
+            "An MCP connection adds an external capability and data path that is outside the zero-integration auditor baseline.",
+            "Remove MCP servers from the auditor profile or document and approve a narrowly scoped exception before re-audit.",
+        ))
 
     not_verified = [
         "Dependency reachability and vulnerable code paths were not tested.",
