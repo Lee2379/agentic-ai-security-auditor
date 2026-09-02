@@ -7,16 +7,15 @@
 [![Docker](https://img.shields.io/badge/runtime-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Irisは、containerized Hermes multi-agent環境を対象とする独立したsecurity audit agentです。決定論的かつread-onlyなruntime evidenceを構造化監査レポートへ変換し、remediationは明示的な人間の承認境界より外側に置きます。
+## プロジェクト概要
 
-本リポジトリは、二つの相補的なレイヤーで構成されています。
+- **解決した課題:** セキュリティ監査をエージェントだけに任せると、未確認の状態を正常と判断したり、監査対象そのものを変更したりする危険があります。
+- **実装したもの:** 読み取り専用コレクター、16項目の検査規則、脆弱性情報の重複統合、構造化レポート生成、オフラインで動く非rootコンテナを実装しました。
+- **結果:** 公開用の検証データでは12件の脆弱性情報を6件の実体に統合し、7件の指摘事項と15件の合格項目を出力します。CIでは14件のテストが通過します。
+- **担当範囲:** 監査境界の設計、Pythonパイプラインとコレクターの実装、検査規則とレポート仕様の定義、公開用資料の整理を担当しました。
+- **確認方法:** [サンプルレポート](artifacts/sample_run/audit_report.md)を確認するか、`iris-audit evaluate --input evidence/sample/collector.json --output artifacts/local_run`を実行できます。
 
-| レイヤー | 目的 | 証拠 |
-|---|---|---|
-| Operational deployment | 稼働中のHermes環境におけるIris profile、runtime isolation、control state、scheduled execution、finding生成を示す | [`assets/evidence`](assets/evidence)のsanitized・hash-verified screenshots |
-| Reproducible reference pipeline | private infrastructure、credential、network、LLM APIを使わず、監査手法を検査・test可能にする | Python package、synthetic evidence fixture、deterministic artifacts、tests、hardened Docker configuration |
-
-> **Scope:** Hermes Agentはthird-party runtimeです。本リポジトリはその上に設計した監査role、evidence pipeline、control、evaluation、governanceを記録・再現するものであり、Hermes platform自体の著作を主張しません。
+> **範囲:** Hermes Agentは第三者が開発した実行基盤です。本リポジトリはその上に設計した監査役割、証拠収集パイプライン、検査規則、評価、変更管理を記録・再現するものであり、Hermesプラットフォーム自体の著作を主張しません。
 
 ## 技術文書
 
@@ -49,7 +48,7 @@ Irisは次の設計要件でこれらを分離します。
 | Evidence integrity | collectionを決定論的・read-onlyとし、安全宣言をschema validation | [`loader.py`](src/iris_agent_auditor/loader.py)、collector tests、公開transcript |
 | Inflated risk countの防止 | package、CVE identity、fixed versionによりGHSA/PYSECを統合 | [`deduplicate.py`](src/iris_agent_auditor/deduplicate.py)、alias-pair fixture/tests |
 | Factとinferenceの分離 | finding、passed control、Not Verifiedに分類 | [`controls.py`](src/iris_agent_auditor/controls.py)、report contract tests |
-| Agent authorityの制限 | Skill、MCP、interactive CLI tool、remediation channelを持たせない | Operational evidence E-01〜E-03 |
+| Agent authorityの制限 | Skill、MCP、interactive CLI tool、remediation channelを持たせない | 確認済みdeployment record E-01〜E-03 |
 | 再現性 | public pipelineはnetwork/model callなしでbyte比較可能なartifactを生成 | reference artifacts、comparison script、CI |
 | Change governance | recommendationはhuman approvalで終了し、rebuild、regression test、re-auditを要求 | policy configuration、remediation verification plan |
 
@@ -63,7 +62,7 @@ Irisは次の設計要件でこれらを分離します。
 | Contract validation | Python loader | Yes | No | accepted/rejected evidence |
 | Advisory identity resolution | Python normalization／deduplication | Yes | No | canonical vulnerability set |
 | Control evaluation | explicit policy predicates | Yes | No | passed controls、findings、Not Verified |
-| Report synthesis | 実運用のIris／公開harnessのdeterministic renderer | Constrained | No | structured audit report |
+| Report synthesis | 実運用のIris／公開harnessの固定renderer | Constrained | No | structured audit report |
 | Remediation decision | human reviewerと通常のrelease process | Iris外 | approval後のみYes | reviewed rebuild/deployment |
 
 LLMはruntime truthのsourceではなく、範囲を限定した解釈とcommunicationに使用します。公開rendererは同一report contractのinspectable baselineを提供し、private deploymentを公開せずregressionをtest可能にします。
@@ -84,7 +83,7 @@ flowchart TD
         H --> D
     end
 
-    subgraph COLLECTION["Deterministic read-only evidence plane"]
+    subgraph COLLECTION["Read-only evidence plane"]
         C["Collector script"]
         V["Schema and safety validation"]
         N["Evidence normalization"]
@@ -96,7 +95,7 @@ flowchart TD
     end
 
     subgraph ANALYSIS["Iris analysis boundary"]
-        G["Evidence-grounded classification"]
+        G["Evidence-linked classification"]
         Q["Not-Verified handling"]
         M["Structured Markdown report"]
         G --> Q --> M
@@ -130,7 +129,7 @@ collectorがfactを確立し、Irisは提供されたevidenceのみを解釈し�
 | [`loader.py`](src/iris_agent_auditor/loader.py) | required sectionとcollector safety declarationを強制 | schema section欠落、credential read、state change、remediation宣言 | normalizer／evaluator |
 | [`deduplicate.py`](src/iris_agent_auditor/deduplicate.py) | severity normalizationとadvisory alias resolution | database重複record、alias間のseverity不整合 | dependency finding builder |
 | [`controls.py`](src/iris_agent_auditor/controls.py) | runtime／policy predicate評価 | root、capability、socket、seccomp、permissive policy、weak file mode、tool/MCP exposure | finding/report pipeline |
-| [`pipeline.py`](src/iris_agent_auditor/pipeline.py) | evaluation順序、stable ID、metrics、artifact生成 | non-deterministic ordering、normalized outputへのraw duplicate混入 | CLI／CI |
+| [`pipeline.py`](src/iris_agent_auditor/pipeline.py) | evaluation順序、stable ID、metrics、artifact生成 | 不安定なordering、normalized outputへのraw duplicate混入 | CLI／CI |
 | [`report.py`](src/iris_agent_auditor/report.py) | typed findingとmetricからgovernance report生成 | report-contract testによるrequired section欠落 | human reviewer |
 
 Machine-readable finding contract:
@@ -300,7 +299,7 @@ bash -n scripts/collect_security_evidence.sh
 docker build -t agentic-ai-security-auditor .
 ```
 
-CIはtest suite、deterministic artifactの再生成とbyte比較、secret／PII pattern scan、全evidence imageのSHA-256 verification、collector syntax、non-root image buildを実行します。
+CIはtest suite、reference artifactの再生成とbyte比較、secret／PII pattern scan、全evidence imageのSHA-256 verification、collector syntax、non-root image buildを実行します。
 
 ## Privacyと公開control
 
@@ -317,7 +316,7 @@ Disclosure guidanceは[`SECURITY.md`](SECURITY.md)を参照してください。
 - defensive audit workflowであり、penetration testing systemではありません。
 - public fixtureはvulnerable-code reachabilityやexploitabilityを証明しません。
 - network policy、image signature、SBOM provenance、host isolation、secret rotationの評価には追加evidenceが必要です。
-- LLMはsynthesisを改善できますがsource of truthではなく、deterministic evidenceとexplicit limitationを優先します。
+- LLMはsynthesisを改善できますがsource of truthではなく、収集済みevidenceと明示した制約を優先します。
 - remediationはhuman-approved rebuild、test、re-auditが完了するまでopenです。
 
 ## Production拡張計画
@@ -334,8 +333,8 @@ Disclosure guidanceは[`SECURITY.md`](SECURITY.md)を参照してください。
 ## リポジトリ構成
 
 ```text
-├── assets/evidence/        # sanitized・hash-verified operational evidence
-├── artifacts/sample_run/   # deterministic reference output
+├── assets/evidence/        # sanitized・hash-verified deployment records
+├── artifacts/sample_run/   # reproducible reference output
 ├── config/                 # 公開可能なauditor policy
 ├── docs/                   # system design、control catalog、evaluation、threat model、sources
 ├── evidence/sample/        # synthetic collector fixture

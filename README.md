@@ -7,14 +7,13 @@
 [![Docker](https://img.shields.io/badge/runtime-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Iris is an independently scoped security-audit agent for a containerized Hermes multi-agent environment. It converts deterministic, read-only runtime evidence into a structured audit report while keeping remediation behind explicit human approval.
+## Project summary
 
-The repository contains two complementary layers:
-
-| Layer | Purpose | Evidence |
-|---|---|---|
-| Operational deployment | Shows the configured Iris profile, runtime isolation, control state, scheduled execution, and generated findings from the running Hermes environment | Sanitized, hash-verified screenshots in [`assets/evidence`](assets/evidence) |
-| Reproducible reference pipeline | Makes the audit method inspectable and testable without private infrastructure, credentials, network access, or an LLM API | Python package, synthetic evidence fixture, deterministic artifacts, tests, and hardened Docker configuration |
+- **Problem:** A security agent can overstate incomplete runtime checks or change the system it is supposed to inspect.
+- **What I built:** A read-only collector, 16 explicit controls, advisory deduplication, a structured report generator, and a hardened offline container for a Hermes deployment.
+- **Result:** The public fixture reduces 12 advisory records to 6 underlying vulnerabilities, reports 7 findings and 15 passed controls, and passes 14 tests in CI.
+- **My role:** I designed the audit boundary, implemented the Python pipeline and collector, defined the controls and report contract, and prepared the reviewed public evidence.
+- **Review or run:** Start with the [sample report](artifacts/sample_run/audit_report.md), then run `iris-audit evaluate --input evidence/sample/collector.json --output artifacts/local_run`.
 
 > **Scope statement:** Hermes Agent is a third-party runtime. This portfolio repository documents and reproduces the audit design built around it; it does not claim authorship of the Hermes platform.
 
@@ -30,7 +29,7 @@ The repository contains two complementary layers:
 ## System at a glance
 
 - Dedicated `iris` profile with zero bundled skills and an explicit security-auditor persona.
-- Deterministic evidence collector that does not read credential values or mutate the target system.
+- Read-only evidence collector that does not read credential values or mutate the target system.
 - Runtime checks for UID/GID, Linux capabilities, seccomp, `NoNewPrivs`, Docker-socket exposure, sensitive-file permissions, approval policy, tool exposure, and MCP configuration.
 - Dependency-advisory normalization with GHSA/PYSEC alias deduplication.
 - Evidence-aware classification: missing evidence is reported as **Not Verified**, never as passed.
@@ -46,10 +45,10 @@ Iris addresses those failure modes through explicit design requirements:
 
 | Requirement | Design response | Verification surface |
 |---|---|---|
-| Preserve evidence integrity | Collection is deterministic and read-only; collector guarantees are schema-validated before analysis | [`loader.py`](src/iris_agent_auditor/loader.py), collector tests, published transcript |
+| Preserve evidence integrity | Collection follows fixed rules and is read-only; collector guarantees are schema-validated before analysis | [`loader.py`](src/iris_agent_auditor/loader.py), collector tests, published transcript |
 | Prevent inflated risk counts | GHSA and PYSEC records are consolidated by package, CVE identity, and fixed version | [`deduplicate.py`](src/iris_agent_auditor/deduplicate.py), six alias-pair tests/fixtures |
 | Distinguish fact from inference | Every conclusion is classified as a finding, passed control, or Not Verified item | [`controls.py`](src/iris_agent_auditor/controls.py), report contract tests |
-| Bound agent authority | Iris has no bundled skills, no MCP servers, no interactive CLI tools, and no remediation channel | Operational evidence E-01 through E-03 |
+| Bound agent authority | Iris has no bundled skills, no MCP servers, no interactive CLI tools, and no remediation channel | Reviewed deployment records E-01 through E-03 |
 | Make results reproducible | The public pipeline makes no network or model call and produces byte-comparable artifacts | Reference artifacts, comparison script, CI |
 | Keep changes governed | Recommendations terminate at a human approval boundary and require rebuild, regression testing, and re-audit | Policy configuration and remediation verification plan |
 
@@ -57,13 +56,13 @@ Iris addresses those failure modes through explicit design requirements:
 
 The deployed agent and the public reference implementation serve different responsibilities. This is a deliberate control boundary rather than an attempt to replace one with the other.
 
-| Stage | Authority | Deterministic? | May change target state? | Primary output |
+| Stage | Authority | Repeatable? | May change target state? | Primary output |
 |---|---|---:|---:|---|
 | Runtime evidence collection | Shell collector with an explicit command allowlist | Yes | No | Bounded evidence record |
 | Contract validation | Python loader | Yes | No | Accepted/rejected evidence |
 | Advisory identity resolution | Python normalization and deduplication | Yes | No | Canonical vulnerability set |
 | Control evaluation | Explicit policy predicates | Yes | No | Passed controls, findings, Not Verified items |
-| Report synthesis | Iris in the operational deployment; deterministic renderer in the public harness | Constrained | No | Structured audit report |
+| Report synthesis | Iris in the operational deployment; fixed renderer in the public harness | Constrained | No | Structured audit report |
 | Remediation decision | Human reviewer and normal release process | Outside Iris | Yes, after approval | Reviewed rebuild/deployment |
 
 The LLM is therefore used for bounded interpretation and communication, not as the source of runtime truth. The public renderer provides an inspectable baseline for the same report contract and makes regressions testable without disclosing the private deployment.
@@ -84,7 +83,7 @@ flowchart TD
         H --> D
     end
 
-    subgraph COLLECTION["Deterministic read-only evidence plane"]
+    subgraph COLLECTION["Read-only evidence plane"]
         C["Collector script"]
         V["Schema and safety validation"]
         N["Evidence normalization"]
@@ -96,7 +95,7 @@ flowchart TD
     end
 
     subgraph ANALYSIS["Iris analysis boundary"]
-        G["Evidence-grounded classification"]
+        G["Evidence-linked classification"]
         Q["Not-Verified handling"]
         M["Structured Markdown report"]
         G --> Q --> M
@@ -130,7 +129,7 @@ The collector establishes facts; Iris interprets only the supplied evidence. The
 | [`loader.py`](src/iris_agent_auditor/loader.py) | Enforces required sections and collector safety declarations | Missing schema sections; any declaration that credentials were read or state/remediation changed | Normalizer and evaluators |
 | [`deduplicate.py`](src/iris_agent_auditor/deduplicate.py) | Normalizes severity and resolves advisory aliases | Duplicate database records and inconsistent alias severity | Dependency finding builder |
 | [`controls.py`](src/iris_agent_auditor/controls.py) | Evaluates explicit runtime and policy predicates | Root execution, capabilities, socket exposure, missing seccomp, permissive policy, weak file modes | Finding/report pipeline |
-| [`pipeline.py`](src/iris_agent_auditor/pipeline.py) | Orders evaluation, assigns stable IDs, calculates metrics, writes artifacts | Non-deterministic ordering and duplicate raw lists in normalized output | CLI and CI |
+| [`pipeline.py`](src/iris_agent_auditor/pipeline.py) | Orders evaluation, assigns stable IDs, calculates metrics, writes artifacts | Unstable ordering and duplicate raw lists in normalized output | CLI and CI |
 | [`report.py`](src/iris_agent_auditor/report.py) | Renders the governance report from typed findings and metrics | Missing required sections through report-contract tests | Human reviewer |
 
 The machine-readable finding contract is intentionally small:
@@ -162,7 +161,7 @@ Each field has a separate purpose: evidence records the observation, risk interp
 
 Detailed design decisions are recorded in [`docs/system-design.md`](docs/system-design.md); the complete rule inventory is in [`docs/control-catalog.md`](docs/control-catalog.md).
 
-## Operational evidence
+## Reviewed deployment records
 
 The images below are privacy-reviewed derivatives of the original terminal captures. Personal shell prompts and transient execution identifiers were covered with solid pixel masks; command output and security-relevant state were otherwise preserved. File integrity is enforced by [`assets/evidence/manifest.json`](assets/evidence/manifest.json) in CI.
 
@@ -306,7 +305,7 @@ bash -n scripts/collect_security_evidence.sh
 docker build -t agentic-ai-security-auditor .
 ```
 
-CI repeats the test suite, regenerates and byte-compares deterministic artifacts, scans text for configured secret/PII patterns, verifies every evidence image against its SHA-256 manifest, validates collector syntax, and builds the non-root image.
+CI repeats the test suite, regenerates and byte-compares the reference artifacts, scans text for configured secret/PII patterns, verifies every evidence image against its SHA-256 manifest, validates collector syntax, and builds the non-root image.
 
 ## Privacy and publication controls
 
@@ -323,10 +322,10 @@ See [`SECURITY.md`](SECURITY.md) for disclosure guidance.
 - This is a defensive audit workflow, not a penetration-testing system.
 - The public fixture does not prove vulnerable-code reachability or exploitability.
 - Network policy, image signatures, SBOM provenance, host isolation, and secret rotation require additional evidence before they can be assessed.
-- An LLM can improve synthesis but is not a source of truth; deterministic evidence and explicit limitations remain authoritative.
+- An LLM can improve synthesis but is not a source of truth; collected evidence and explicit limitations remain authoritative.
 - Remediation remains open until a human-approved rebuild is tested and re-audited.
 
-## Production extension path
+## Next validation steps
 
 The current implementation is intentionally narrow. A production deployment would extend it through independently testable increments:
 
@@ -342,8 +341,8 @@ The current implementation is intentionally narrow. A production deployment woul
 ## Repository map
 
 ```text
-├── assets/evidence/        # sanitized, hash-verified operational evidence
-├── artifacts/sample_run/   # deterministic reference output
+├── assets/evidence/        # sanitized, hash-verified deployment records
+├── artifacts/sample_run/   # reproducible reference output
 ├── config/                 # publishable auditor policy
 ├── docs/                   # system design, control catalog, evaluation, threat model, sources
 ├── evidence/sample/        # synthetic collector fixture
